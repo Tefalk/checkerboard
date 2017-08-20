@@ -1,0 +1,94 @@
+-- Checkerboard
+
+-- Use this function to perform your initial setup
+function setup()
+    print("basis for axis and allies analysis")
+    print("add character failed, didn't find number sprites")
+end
+
+-- This function gets called once every frame
+function draw()
+    -- This sets a dark background color 
+    background(40, 40, 50)
+
+    -- This sets the line thickness
+    strokeWidth(5)
+
+    -- Do your drawing here
+    
+end
+
+displayMode(FULLSCREEN)
+supportedOrientations(LANDSCAPE_ANY)
+
+function setup()
+    rectMode(CENTER)
+    rec={vec3(800,600,1),vec3(800,500,2),vec3(800,400,3),vec3(800,300,4),
+        vec3(800,200,5),vec3(800,100,6),vec3(900,600,7),vec3(900,500,8),
+        vec3(900,400,9),vec3(900,300,10),vec3(900,200,11)}
+    pic={readImage("Planet Cute:Character Boy"),readImage("Planet Cute:Character Cat Girl"),
+        readImage("Planet Cute:Character Pink Girl"),readImage("Planet Cute:Character Horn Girl"),
+        readImage("Planet Cute:Character Pink Girl"),readImage("Planet Cute:Character Horn Girl"),
+        readImage("Planet Cute:Character Pink Girl"),readImage("Planet Cute:Character Horn Girl"),
+        readImage("Planet Cute:Character Pink Girl"),readImage("Planet Cute:Character Horn Girl"),
+        readImage("Tyrian Remastered:Enemy Ship A"),readImage("Tyrian Remastered:Enemy Ship B")}
+    move=0
+    square=80
+end
+
+function draw()
+    background(40, 40, 50)
+    drawBoard()
+    drawSq()
+end
+
+function touched(t)
+    if t.state==BEGAN then
+        if t.tapCount==2 then
+            table.remove(rec,move)
+        end
+        for a,b in pairs(rec) do
+            if t.x>b.x-square/2 and t.x<b.x+square/2 and t.y>b.y-square/2 and t.y<b.y+square/2 then
+                if a>11 then
+                    move=a
+                else
+                    table.insert(rec,vec3(t.x,t.y,a))
+                    move=#rec
+                end
+                break
+            end
+        end        
+    end
+    if t.state==MOVING and move>0 then
+        rec[move].x=t.x
+        rec[move].y=t.y       
+    end
+end
+
+function drawBoard()
+    for x=1,8 do
+        for y=1,8 do
+            if x%2==y%2 then
+                fill(255,255,255)
+            else
+                fill(255,0,0)
+            end
+            rect(x*square,y*square,square-1,square-1)
+        end
+    end
+    fill(255)
+    for a,b in pairs(rec) do
+        if a<12 then
+            rect(b.x,b.y,square)
+            sprite(pic[b.z],b.x,b.y,square,square)
+        end
+    end
+end
+
+function drawSq()
+    for a,b in pairs(rec) do
+        if a>11 then
+            sprite(pic[b.z],b.x,b.y,square,square)
+        end
+    end
+end
